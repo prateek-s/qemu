@@ -2009,6 +2009,7 @@ static int ram_save_iterate(QEMUFile *f, void *opaque)
         }
         pages_sent += pages;
         acct_info.iterations++;
+        trace_migration_iteration(acct_info.iterations) ;
         /* XXX This IS number of RAM iterations 
            Insert limiter here!  */
         

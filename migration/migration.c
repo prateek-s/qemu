@@ -1627,7 +1627,9 @@ static void migration_completion(MigrationState *s, int current_active_state,
                                  int64_t *start_time)
 {
     int ret;
-
+    int iters = (int) get_ram_iters() ;
+    trace_migration_stop_copy_begin(iters) ;
+    
     if (s->state == MIGRATION_STATUS_ACTIVE) {
         qemu_mutex_lock_iothread();
         *start_time = qemu_clock_get_ms(QEMU_CLOCK_REALTIME);
@@ -1770,7 +1772,7 @@ static void *migration_thread(void *opaque)
             /* if (get_ram_iters() > 30) { */
             /*   break ; */
             /* } */
-            if ((pending_size && pending_size >= max_size) && get_ram_iters()<30) {
+            if ((pending_size && pending_size >= max_size) || get_ram_iters()<30) {
                 /* Still a significant amount to transfer */
 
                 if (migrate_postcopy_ram() &&
