@@ -608,8 +608,6 @@ static void populate_ram_info(MigrationInfo *info, MigrationState *s)
     info->has_ram = true;
     info->ram = g_malloc0(sizeof(*info->ram));
     
-    info->ram->iters = get_ram_iters() ; //XXX get number of iterations somehow
-    
     info->ram->transferred = ram_bytes_transferred();
     info->ram->total = ram_bytes_total();
     info->ram->duplicate = dup_mig_pages_transferred();
@@ -618,6 +616,8 @@ static void populate_ram_info(MigrationInfo *info, MigrationState *s)
     info->ram->normal_bytes = norm_mig_bytes_transferred();
     info->ram->mbps = s->mbps;
     info->ram->dirty_sync_count = s->dirty_sync_count;
+    info->ram->iters = get_ram_iters() ; //XXX get number of iterations somehow
+
     info->ram->postcopy_requests = s->postcopy_requests;
    
     
@@ -1772,7 +1772,7 @@ static void *migration_thread(void *opaque)
             /* if (get_ram_iters() > 30) { */
             /*   break ; */
             /* } */
-            if ((pending_size && pending_size >= max_size) || get_ram_iters()<30) {
+            if ((pending_size && pending_size >= max_size)) {// || get_ram_iters()<30) {
                 /* Still a significant amount to transfer */
 
                 if (migrate_postcopy_ram() &&
